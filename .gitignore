@@ -1,0 +1,21 @@
+# Ignore all dotfiles...
+.*
+
+# Ignore all back-up files...
+*~
+*.bak
+
+# except for .gitignore
+!.gitignore
+
+# Exclude Kdevelop4 files ...
+.kdev*
+
+# Exclude QtCreator files ...
+CMakeLists.txt.user*
+*.user
+# ignore ctags file
+tags
+
+# ignore build temp dir
+bld/
