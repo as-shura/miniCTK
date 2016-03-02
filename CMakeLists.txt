@@ -740,6 +740,7 @@ endif()
 # CTK dependencies - Projects should be TOPOLOGICALLY ordered
 #-----------------------------------------------------------------------------
 set(CTK_DEPENDENCIES
+  Poco
   ZMQ
   QtTesting
   )
