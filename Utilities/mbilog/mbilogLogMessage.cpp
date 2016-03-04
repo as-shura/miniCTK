@@ -1,6 +1,6 @@
 /*===================================================================
 
-BlueBerry Platform
+The Medical Imaging Interaction Toolkit (MITK)
 
 Copyright (c) German Cancer Research Center,
 Division of Medical and Biological Informatics.
@@ -14,28 +14,6 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#include "berryPlatformObject.h"
+#include "mbilogLogMessage.h"
 
-#include "berryPlatform.h"
-#include "berryIAdapterManager.h"
-
-namespace berry {
-
-PlatformObject::PlatformObject()
-{
-}
-
-Object* PlatformObject::GetAdapter(const QString& adapter) const
-{
-  IAdapterManager* adapterManager = Platform::GetAdapterManager();
-  if (adapterManager)
-  {
-    return adapterManager->GetAdapter(this, adapter);
-  }
-  else
-  {
-    return nullptr;
-  }
-}
-
-}
+//TODO: delete?

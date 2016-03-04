@@ -39,13 +39,14 @@ if(NOT DEFINED Poco_DIR)
       set(location_args GIT_REPOSITORY "https://github.com/pocoproject/poco.git"
 			GIT_TAG ${revision_tag})
     endif()
-
+#${location_args}
   ExternalProject_Add(${proj}
     LIST_SEPARATOR ${sep}
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-build
     PREFIX ${proj}${ep_suffix}
-    ${location_args}
+    URL https://github.com/pocoproject/poco/archive/poco-1.6.1-release.tar.gz
+    URL_MD5 208872b13d282dfb0f0580fc11df96f3
     INSTALL_COMMAND ""
     CMAKE_CACHE_ARGS
       ${ep_common_cache_args}

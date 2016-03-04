@@ -18,7 +18,7 @@
 #
 ###########################################################################
 
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 3.2)
 
 foreach(p
   CMP0054 # CMake 3.1
@@ -540,11 +540,12 @@ set(CTK_ENABLED_APPS ${_enabled_apps} CACHE INTERNAL "" FORCE)
 
 # Plugins in the list below are not build by default
 set(plugin_list
-  # Optional plug-ins implementings interfaces in PluginFramework/service/
   org.commontk.configadmin
   org.commontk.eventadmin
   org.commontk.log
   org.commontk.metatype
+  org.blueberry.core.runtime
+  org.blueberry.ui.qt
   )
 
 if(CTK_QT_VERSION VERSION_LESS "5")
@@ -552,11 +553,12 @@ if(CTK_QT_VERSION VERSION_LESS "5")
 endif()
 
 foreach(_plugin ${plugin_list})
-  ctk_plugin_option(${_plugin} "Build the ${_plugin} plugin." OFF)
+  ctk_plugin_option(${_plugin} "Build the ${_plugin} plugin." ON)
 endforeach()
 
 # Plug-ins related to the PluginGenerator application
 ctk_plugin_option(org.commontk.plugingenerator.core "Build the org.commontk.plugingenerator.core plugin." OFF)
+
 #ctk_plugin_option(org.commontk.plugingenerator.ui
 #                  "Build the org.commontk.plugingenerator.ui plugin." OFF
 #                  CTK_APP_ctkPluginGenerator)

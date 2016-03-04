@@ -1,21 +1,45 @@
 project(org_blueberry_core_runtime)
 
+include(files.cmake)
+
 set(QT_USE_QTXML 1)
 
-mitk_create_plugin(EXPORT_DIRECTIVE org_blueberry_core_runtime_EXPORT
-  EXPORTED_INCLUDE_SUFFIXES src
-                            src/application
-                            src/dynamichelpers
-                            src/registry
-  MODULE_DEPENDS PUBLIC mbilog
+set(PLUGIN_export_directive  "org_blueberry_core_runtime_EXPORT")
+
+set(PLUGIN_SRCS
+  ${CPP_FILES}
+  )
+
+# Files which should be processed by Qts moc
+set(PLUGIN_MOC_SRCS
+  ${MOC_H_FILES}
+  )
+
+# Qt Designer files which should be processed by Qts uic
+set(PLUGIN_UI_FORMS
 )
 
-target_link_libraries(${PLUGIN_TARGET} PUBLIC Poco::Foundation Poco::Util Poco::XML)
-if(MITK_USE_Qt5)
-  target_link_libraries(${PLUGIN_TARGET} PRIVATE Qt5::Gui Qt5::Xml)
-endif()
+# QRC Files which should be compiled into the plugin
+set(PLUGIN_resources
+)
 
-# Set compiler flags
-target_compile_definitions(${PLUGIN_TARGET} PUBLIC "$<$<PLATFORM_ID:Windows>:POCO_NO_UNWINDOWS;WIN32_LEAN_AND_MEAN>")
+set(PLUGIN_CACHED_RESOURCEFILES
+  plugin.xml
+)
+
+#Compute the plugin dependencies
+ctkFunctionGetTargetLibraries(PLUGIN_target_libraries)
+
+
+ctkMacroBuildPlugin(
+  NAME ${PROJECT_NAME}
+  EXPORT_DIRECTIVE ${PLUGIN_export_directive}
+  SRCS ${PLUGIN_SRCS}
+  MOC_SRCS ${PLUGIN_MOC_SRCS}
+  UI_FORMS ${PLUGIN_UI_FORMS}
+  RESOURCES ${PLUGIN_resources}
+  CACHED_RESOURCEFILES ${PLUGIN_CACHED_RESOURCEFILES}
+  TARGET_LIBRARIES ${PLUGIN_target_libraries}
+)
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/berryConfig.h.in" "${CMAKE_CURRENT_BINARY_DIR}/berryConfig.h" @ONLY)

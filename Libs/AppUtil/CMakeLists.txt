@@ -1,17 +1,19 @@
-project(Workbench)
-
-# Create a cache entry for the provisioning file which is used to export
-# the file name in the MITKConfig.cmake file. This will keep external projects
-# which rely on this file happy.
-set(MITK_EXTAPP_PROVISIONING_FILE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MitkWorkbench.provisioning" CACHE INTERNAL "MitkWorkbench provisioning file" FORCE)
+project(AppUtil)
 
 #
-# See CTK/CMake/ctkMacroBuildApp.cmake for details
+# See CTK/CMake/ctkMacroBuildLib.cmake for details
 #
 
+set(KIT_export_directive "MITKAPPUTIL_EXPORT")
+
+
+# Source files
 set(KIT_SRCS
-    MitkWorkbench.cpp
-)
+    src/mitkBaseApplication.cpp
+    src/mitkProvisioningInfo.cpp
+    src/QmitkSafeApplication.cpp
+    src/QmitkSigleApplication.cpp
+  )
 
 # Headers that should run through moc
 set(KIT_MOC_SRCS
@@ -29,16 +31,23 @@ set(KIT_resources
 # The following macro will read the target libraries from the file 'target_libraries.cmake'
 ctkFunctionGetTargetLibraries(KIT_target_libraries)
 
-ctkMacroBuildApp(
+#if(CTK_QT_VERSION VERSION_GREATER "4")
+#  list(APPEND KIT_target_libraries Qt5::Sql Qt5::Concurrent)
+#endif()
+
+ctkMacroBuildLib(
   NAME ${PROJECT_NAME}
+  EXPORT_DIRECTIVE ${KIT_export_directive}
+  INCLUDE_DIRECTORIES ${CTK_SUPERBUILD_BINARY_DIR}
   SRCS ${KIT_SRCS}
   MOC_SRCS ${KIT_MOC_SRCS}
   UI_FORMS ${KIT_UI_FORMS}
   TARGET_LIBRARIES ${KIT_target_libraries}
   RESOURCES ${KIT_resources}
+  LIBRARY_TYPE ${CTK_LIBRARY_MODE}
   )
 
 # Testing
 if(BUILD_TESTING)
-#   add_subdirectory(Testing)
+#  add_subdirectory(Testing)
 endif()

@@ -1,6 +1,6 @@
 /*===================================================================
 
-BlueBerry Platform
+The Medical Imaging Interaction Toolkit (MITK)
 
 Copyright (c) German Cancer Research Center,
 Division of Medical and Biological Informatics.
@@ -14,28 +14,24 @@ See LICENSE.txt or http://www.mitk.org for details.
 
 ===================================================================*/
 
-#include "berryPlatformObject.h"
+#ifndef _MBILOG_LOGGINGTYPES_H_
+#define _MBILOG_LOGGINGTYPES_H_
 
-#include "berryPlatform.h"
-#include "berryIAdapterManager.h"
-
-namespace berry {
-
-PlatformObject::PlatformObject()
-{
+namespace mbilog {
+/** \brief This enum defines the message/event levels of the mbi logging mechanism.
+ *       Info: TODO
+ *         Warn: TODO
+ *         Error: TODO
+ *         Fatal: TODO
+ *         Debug: TODO
+ */
+  enum {
+    Info,
+    Warn,
+    Error,
+    Fatal,
+    Debug
+  };
 }
 
-Object* PlatformObject::GetAdapter(const QString& adapter) const
-{
-  IAdapterManager* adapterManager = Platform::GetAdapterManager();
-  if (adapterManager)
-  {
-    return adapterManager->GetAdapter(this, adapter);
-  }
-  else
-  {
-    return nullptr;
-  }
-}
-
-}
+#endif

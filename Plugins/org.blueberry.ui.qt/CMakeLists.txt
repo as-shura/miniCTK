@@ -1,24 +1,41 @@
 project(org_blueberry_ui_qt)
 
-set(PLUGIN_exported_include_suffixes
-  src
-  src/actions
-  src/application
-  src/commands
-  src/guitk
-  src/handlers
-  src/intro
-  src/model
-  src/presentations
-  src/services
-  src/testing
-  src/tweaklets
-  src/util
+#include "files.cmake"
+
+set(PLUGIN_export_directive  "BERRY_UI_QT")
+
+set(PLUGIN_SRCS
+  ${CPP_FILES}
+  )
+
+# Files which should be processed by Qts moc
+set(PLUGIN_MOC_SRCS
+  ${MOC_H_FILES}
+  )
+
+# Qt Designer files which should be processed by Qts uic
+set(PLUGIN_UI_FORMS
 )
 
-mitk_create_plugin(EXPORT_DIRECTIVE BERRY_UI_QT
-                        EXPORTED_INCLUDE_SUFFIXES ${PLUGIN_exported_include_suffixes})
+# QRC Files which should be compiled into the plugin
+set(PLUGIN_resources
+)
 
-if(MITK_USE_Qt5)
-  target_link_libraries(${PLUGIN_TARGET} PUBLIC Qt5::Widgets)
-endif()
+set(PLUGIN_CACHED_RESOURCEFILES
+  plugin.xml
+)
+
+#Compute the plugin dependencies
+ctkFunctionGetTargetLibraries(PLUGIN_target_libraries)
+
+
+ctkMacroBuildPlugin(
+  NAME ${PROJECT_NAME}
+  EXPORT_DIRECTIVE ${PLUGIN_export_directive}
+  SRCS ${PLUGIN_SRCS}
+  MOC_SRCS ${PLUGIN_MOC_SRCS}
+  UI_FORMS ${PLUGIN_UI_FORMS}
+  RESOURCES ${PLUGIN_resources}
+  CACHED_RESOURCEFILES ${PLUGIN_CACHED_RESOURCEFILES}
+  TARGET_LIBRARIES ${PLUGIN_target_libraries}
+)
