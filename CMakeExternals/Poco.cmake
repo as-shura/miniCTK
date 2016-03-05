@@ -23,23 +23,6 @@ if(DEFINED Poco_DIR AND NOT EXISTS ${Poco_DIR})
 endif()
 
 if(NOT DEFINED Poco_DIR)
-
-    set(revision_tag 3d1a094725ba42203a812aaad4bac2f91110a8da)
-    if(${proj}_REVISION_TAG)
-      set(revision_tag ${${proj}_REVISION_TAG})
-    endif()
-
-    set(location_args )
-    if(${proj}_URL)
-      set(location_args URL ${${proj}_URL})
-    elseif(${proj}_GIT_REPOSITORY)
-      set(location_args GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
-			GIT_TAG ${revision_tag})
-    else()
-      set(location_args GIT_REPOSITORY "https://github.com/pocoproject/poco.git"
-			GIT_TAG ${revision_tag})
-    endif()
-#${location_args}
   ExternalProject_Add(${proj}
     LIST_SEPARATOR ${sep}
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
@@ -47,7 +30,7 @@ if(NOT DEFINED Poco_DIR)
     PREFIX ${proj}${ep_suffix}
     URL https://github.com/pocoproject/poco/archive/poco-1.6.1-release.tar.gz
     URL_MD5 208872b13d282dfb0f0580fc11df96f3
-    INSTALL_COMMAND ""
+    #INSTALL_COMMAND ""
     CMAKE_CACHE_ARGS
       ${ep_common_cache_args}
       -DENABLE_XML:BOOL=ON
@@ -73,7 +56,7 @@ if(NOT DEFINED Poco_DIR)
     DEPENDS ${proj_DEPENDENCIES}
    )
   set(Poco_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
-
+  mitkFunctionInstallExternalCMakeProject(Poco)
 else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()

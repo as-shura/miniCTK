@@ -1,6 +1,6 @@
 project(mbilog)
 
-option(MBILOG_ENABLE_DEBUG_MESSAGES "Enable extra debug log output" OFF)
+option(MBILOG_ENABLE_DEBUG_MESSAGES "Enable extra debug log output" ON)
 mark_as_advanced(MBILOG_ENABLE_DEBUG_MESSAGES)
 
 if(MBILOG_ENABLE_DEBUG_MESSAGES)

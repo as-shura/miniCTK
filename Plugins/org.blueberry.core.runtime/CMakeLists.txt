@@ -4,6 +4,17 @@ include(files.cmake)
 
 set(QT_USE_QTXML 1)
 
+include_directories(
+    src
+    src/application
+    src/dynamichelpers
+    src/internal
+    src/registry
+    /Users/gxj/sagittarius/sagittarius/bld/CMakeExternals/Install/include
+    )
+
+message(STATUS "Blueberry include: ${CMAKE_BINARY_DIR}/CMakeExternals/Install/include")
+
 set(PLUGIN_export_directive  "org_blueberry_core_runtime_EXPORT")
 
 set(PLUGIN_SRCS
@@ -24,7 +35,7 @@ set(PLUGIN_resources
 )
 
 set(PLUGIN_CACHED_RESOURCEFILES
-  plugin.xml
+  ${CACHED_RESOURCE_FILES}
 )
 
 #Compute the plugin dependencies

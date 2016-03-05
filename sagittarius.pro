@@ -2317,4 +2317,5 @@ DISTFILES += \
     CMake/ctkWrapPythonQt.py \
     README \
     Libs/AppUtil/files.cmake \
-    Libs/AppUtil/CMakeLists.txt
+    Libs/AppUtil/CMakeLists.txt \
+    CMake/mitkFunctionInstallExternalCMakeProject.cmake

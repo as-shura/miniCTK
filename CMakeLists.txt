@@ -22,6 +22,7 @@ cmake_minimum_required(VERSION 3.2)
 
 foreach(p
   CMP0054 # CMake 3.1
+  CMP0042
   )
   if(POLICY ${p})
     cmake_policy(SET ${p} NEW)
@@ -37,6 +38,18 @@ set(EXTERNAL_PROJECT_FILE_PREFIX "")
 include(ExternalProject)
 include(ctkMacroCheckExternalProjectDependency)
 
+include(mitkFunctionGetGccVersion)
+include(mitkFunctionCheckCompilerFlags)
+include(mitkFunctionSuppressWarnings) # includes several functions
+include(mitkMacroEmptyExternalProject)
+include(mitkFunctionGenerateProjectXml)
+include(mitkFunctionEnableBuildConfiguration)
+include(mitkFunctionWhitelists)
+include(mitkFunctionAddExternalProject)
+include(mitkFunctionInstallExternalCMakeProject)
+include(mitkFunctionCreateModule)
+include(mitkFunctionUseModules)
+include(mitkFunctionCheckModuleDependencies)
 #-----------------------------------------------------------------------------
 if(APPLE)
   # Note: By setting CMAKE_OSX_* variables before any enable_language() or project() calls,
@@ -51,7 +64,104 @@ endif()
 #-----------------------------------------------------------------------------
 project(CTK)
 #-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+# Check miminum Mac OS X version
+#-----------------------------------------------------------------------------
+# The minimum supported Mac OS X version is 10.9. If you use a version less than 10.9, there is no guarantee that the build still works.
+if(APPLE)
+  exec_program(sw_vers ARGS -productVersion OUTPUT_VARIABLE osx_version)
+  if (osx_version VERSION_LESS "10.9")
+    message(WARNING "Detected OS X version \"${osx_version}\" is not supported anymore. Minimum required OS X version is 10.9 or greater.")
+  endif()
+  if (CMAKE_OSX_DEPLOYMENT_TARGET AND CMAKE_OSX_DEPLOYMENT_TARGET VERSION_LESS 10.9)
+    message(WARNING "Detected OS X deployment target \"${CMAKE_OSX_DEPLOYMENT_TARGET}\" is not supported anymore. Minimum required OS X version is 10.9 or greater.")
+  endif()
+endif()
 
+#-----------------------------------------------------------------------------
+# Check miminum compiler versions
+#-----------------------------------------------------------------------------
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  # require at least gcc 4.7.3 as provided by ppa:ubuntu-toolchain-r/test for Ubuntu 12.04
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.7.3)
+    message(FATAL_ERROR "GCC version must be at least 4.7.3
+If you are using Ubuntu 12.04, you can easily install gcc and g++ 4.7.3 (or any later version available) in addition to your version ${CMAKE_CXX_COMPILER_VERSION}:
+  sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+  sudo apt-get update
+  sudo apt-get install gcc-4.7 g++-4.7
+Make sure to explicitly specify these compilers when configuring MITK:
+  CMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc-4.7
+  CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++-4.7
+For more information on the proposed PPA see the Toolchain Updates section of https://wiki.ubuntu.com/ToolChain.")
+  endif()
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # require at least clang 3.4 as provided by Ubuntu 12.04
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.4)
+    message(FATAL_ERROR "Clang version must be at least 3.4")
+  endif()
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+  # require at least clang 5.0
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
+    message(FATAL_ERROR "Apple Clang version must be at least 5.0")
+  endif()
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  # require at least Visual Studio 2012
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17.0.61030.0)
+    message(FATAL_ERROR "Microsoft Visual Studio 2012 Update 4 or newer required (MSVC 17.0.61030.0)")
+  endif()
+else()
+  message(WARNING "You are using an unsupported compiler! Compilation has only been tested with Clang (Linux or Apple), GCC and MSVC.")
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+  mitkFunctionGetGccVersion(${CMAKE_CXX_COMPILER} GCC_VERSION)
+else()
+  set(GCC_VERSION 0)
+endif()
+
+set(MITK_CXX_STANDARD 11)
+
+set(CMAKE_CXX_EXTENSIONS 0)
+set(CMAKE_CXX_STANDARD ${MITK_CXX_STANDARD})
+set(CMAKE_CXX_STANDARD_REQUIRED 1)
+
+# This is necessary to avoid problems with compile feature checks.
+# CMAKE_CXX_STANDARD seems to only set the -std=c++11 flag for targets.
+# However, compile flag checks also need to be done with -std=c++11.
+# The MITK_CXX11_FLAG variable is also used for external projects
+# build during the MITK super-build.
+mitkFunctionCheckCompilerFlags("-std=c++11" MITK_CXX11_FLAG)
+if(NOT MITK_CXX11_FLAG)
+  # Older gcc compilers use -std=c++0x
+  mitkFunctionCheckCompilerFlags("-std=c++0x" MITK_CXX11_FLAG)
+endif()
+
+#-----------------------------------------------------------------------------
+# Warn if source or build path is too long
+#-----------------------------------------------------------------------------
+
+if(WIN32)
+  set(_src_dir_length_max 50)
+  set(_bin_dir_length_max 50)
+  if(MITK_USE_SUPERBUILD)
+    set(_src_dir_length_max 34) # _src_dir_length_max - strlen(ep/src/ITK-build)
+    set(_bin_dir_length_max 40) # _bin_dir_length_max - strlen(MITK-build)
+  endif()
+
+  string(LENGTH "${MITK_SOURCE_DIR}" _src_n)
+  string(LENGTH "${MITK_BINARY_DIR}" _bin_n)
+
+  # The warnings should be converted to errors
+  if(_src_n GREATER _src_dir_length_max)
+    message(WARNING "MITK source code directory path length is too long (${_src_n} > ${_src_dir_length_max})."
+		    "Please move the MITK source code directory to a directory with a shorter path." )
+  endif()
+  if(_bin_n GREATER _bin_dir_length_max)
+    message(WARNING "MITK build directory path length is too long (${_bin_n} > ${_bin_dir_length_max})."
+		    "Please move the MITK build directory to a directory with a shorter path." )
+  endif()
+endif()
 #-----------------------------------------------------------------------------
 # Library mode: SHARED (default) or STATIC
 #
@@ -743,7 +853,6 @@ endif()
 #-----------------------------------------------------------------------------
 set(CTK_DEPENDENCIES
   Poco
-  ZMQ
   QtTesting
   )
 
@@ -954,4 +1063,4 @@ include(Utilities/KWStyle/KWStyle.cmake)
 # the end of the whole configuration process, as a "last step".
 # This directory is typically the last SUBDIRS in the main CMakeLists.txt.
 add_subdirectory(CMake/LastConfigureStep)
-
+add_subdirectory(Utilities/mbilog)
