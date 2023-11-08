@@ -90,9 +90,7 @@ QFutureInterface<ctkCmdLineModuleResult>::QFutureInterface(State initialState)
   : QFutureInterfaceBase(initialState)
   , d(new ctkCmdLineModuleFutureInterfacePrivate(this))
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   refT();
-#endif
 }
 
 //----------------------------------------------------------------------------
@@ -100,21 +98,19 @@ QFutureInterface<ctkCmdLineModuleResult>::QFutureInterface(const QFutureInterfac
   : QFutureInterfaceBase(other)
   , d(other.d)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
   refT();
-#endif
   d->RefCount.ref();
 }
 
 //----------------------------------------------------------------------------
 QFutureInterface<ctkCmdLineModuleResult>::~QFutureInterface()
 {
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-  if (referenceCountIsOne())
+#if QT_VERSION < QT_VERSION_CHECK(5,9,0)
+  if (!derefT())
     resultStore().clear();
 #else
   if (!derefT())
-    resultStore().clear();
+    resultStore().clear<ctkCmdLineModuleResult>();
 #endif
 
   if (!d->RefCount.deref())
@@ -133,13 +129,13 @@ QFutureInterface<ctkCmdLineModuleResult> QFutureInterface<ctkCmdLineModuleResult
 QFutureInterface<ctkCmdLineModuleResult>&
 QFutureInterface<ctkCmdLineModuleResult>::operator=(const QFutureInterface& other)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-  if (referenceCountIsOne())
-#else
   other.refT();
   if (!derefT())
-#endif
+#if QT_VERSION < QT_VERSION_CHECK(5,9,0)
     resultStore().clear();
+#else
+    resultStore().clear<ctkCmdLineModuleResult>();
+#endif
 
   QFutureInterfaceBase::operator=(other);
 

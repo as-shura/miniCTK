@@ -47,14 +47,14 @@ public:
   ctkCmdLineModuleXmlProgressWatcherPrivate(QIODevice* input, ctkCmdLineModuleXmlProgressWatcher* qq)
     : input(input), process(NULL), readPos(0), q(qq), error(false), currentProgress(0)
   {
-    // wrap the content in an artifical root element
+    // wrap the content in an artificial root element
     reader.addData("<module-root>");
   }
 
   ctkCmdLineModuleXmlProgressWatcherPrivate(QProcess* input, ctkCmdLineModuleXmlProgressWatcher* qq)
     : input(input), process(input), readPos(0), q(qq), error(false), currentProgress(0)
   {
-    // wrap the content in an artifical root element
+    // wrap the content in an artificial root element
     reader.addData("<module-root>");
   }
 
@@ -129,7 +129,7 @@ public:
         QString parent;
         if (!stack.empty()) parent = stack.back();
 
-        if (name.compare("module-root") != 0 && name.compare("module-snippet") != 0)
+        if (name.compare(QLatin1String("module-root")) != 0 && name.compare(QLatin1String("module-snippet")) != 0)
         {
           stack.push_back(name.toString());
         }
@@ -177,7 +177,7 @@ public:
           if (!stack.empty()) parent = stack.back();
         }
 
-        if (parent.isEmpty() && name.compare("module-snippet") != 0)
+        if (parent.isEmpty() && name.compare(QLatin1String("module-snippet")) != 0)
         {
           if (name.compare(FILTER_START, Qt::CaseInsensitive) == 0)
           {

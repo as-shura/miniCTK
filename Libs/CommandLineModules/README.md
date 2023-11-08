@@ -4,7 +4,7 @@ CTK Command Line Modules   {#CommandLineModules_Page}
 \brief Overview about the Command Line Modules support in CTK.
 
 \internal This page is best viewed in its [Doxygen processed]
-(http://www.commontk.org/docs/html/CommandLineModules_Page.html) form. \endinternal
+(http://commontk.org/docs/html/CommandLineModules_Page.html) form. \endinternal
 
 [TOC]
 
@@ -63,10 +63,10 @@ executable modules (e.g. command line programs), the XML description is usually 
 the executable itself when it is called with a *--xml* command line argument.
 
 The valid XML structure for the parameter description is defined in the corresponding [schema documentation](ctkCmdLineModule.xsd)
-([absolute link](http://www.commontk.org/docs/html/ctkCmdLineModule.xsd)).
+([absolute link](http://commontk.org/docs/html/ctkCmdLineModule.xsd)).
 
 Please note that running a module may fail due to an invalid XML description. The strictness of validation is specific to the
-application you are using to run the module. However, making sure the XML validates agains the given schema (raw schema file
+application you are using to run the module. However, making sure the XML validates against the given schema (raw schema file
 [here](https://raw.github.com/commontk/CTK/master/Libs/CommandLineModules/Core/Resources/ctkCmdLineModule.xsd)).
 
 ### Progress and Result reporting
@@ -85,7 +85,7 @@ For example a progress report containing a progress value and text would look li
     <filter-end/>
 
 Here is the XML [progress and result schema documentation](ctkCmdLineModuleProcess.xsd)
-([absolute link](http://www.commontk.org/docs/html/ctkCmdLineModuleProcess.xsd)) describing the valid XML fragments. The raw
+([absolute link](http://commontk.org/docs/html/ctkCmdLineModuleProcess.xsd)) describing the valid XML fragments. The raw
 schema file is available [here](https://raw.github.com/commontk/CTK/master/Libs/CommandLineModules/Backend/LocalProcess/Resources/ctkCmdLineModuleProcess.xsd).
 
 
@@ -112,7 +112,7 @@ the module XML description for a specific module.
 The central class for managing modules is the ctkCmdLineModuleManager. There must be at least one back-end registered
 with the manager for module registrations to succeed. A module is registered by calling the
 ctkCmdLineModuleManager::registerModule(const QUrl&) method, providing the URL to the module. If the URL scheme is not handled
-by a previously registerd back-end, an exception is thrown. If registration succeeds, the method returns a
+by a previously registered back-end, an exception is thrown. If registration succeeds, the method returns a
 ctkCmdLineModuleReference object.
 
 Creating specific front-ends for a given module is actually independent of the ctkCmdLineModuleManager, except that a
@@ -121,7 +121,7 @@ ctkCmdLineModuleFrontendFactory::create(const ctkCmdLineModuleReference&) method
 ctkCmdLineModuleFrontend pointer.
 
 This separation of concerns in front and back ends allows for an extensible and flexible design. Front-ends and back-ends
-work independent of each other and can be combined arbitrarly.
+work independent of each other and can be combined arbitrarily.
 
 
 Quick Start

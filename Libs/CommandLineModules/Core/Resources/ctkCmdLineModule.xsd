@@ -5,7 +5,7 @@
             xmlns:xs3p="http://titanium.dstc.edu.au/xml/xs3p">
 
   <xsd:annotation>
-    <xsd:appinfo source="http://www.commontk.org/docs/html/CommandLineModules_Page.html">
+    <xsd:appinfo source="http://commontk.org/docs/html/CommandLineModules_Page.html">
       <xs3p:title>CTK XML schema for command line modules.</xs3p:title>
       <xs3p:printGlossary>false</xs3p:printGlossary>
       <xs3p:printLegend>false</xs3p:printLegend>
@@ -338,7 +338,7 @@
   <xsd:complexType name="enumerationType">
     <xsd:annotation>
       <xsd:documentation>Restricts the valid parameter value to one and only one element out of
-      a specified descrete set of values.</xsd:documentation>
+      a specified discrete set of values.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="paramType">

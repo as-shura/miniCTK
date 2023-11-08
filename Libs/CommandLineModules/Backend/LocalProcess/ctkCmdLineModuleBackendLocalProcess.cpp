@@ -91,7 +91,11 @@ struct ctkCmdLineModuleBackendLocalProcessPrivate
           QStringList args;
           if (parameter.multiple())
           {
+            #if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+            args = valuesIter.value().toString().split(',', Qt::SkipEmptyParts);
+            #else
             args = valuesIter.value().toString().split(',', QString::SkipEmptyParts);
+            #endif
           }
           else
           {
@@ -121,7 +125,11 @@ struct ctkCmdLineModuleBackendLocalProcessPrivate
     }
 
     QList<int> indexes = indexedArgs.keys();
+#if QT_VERSION >= QT_VERSION_CHECK(5,2,0)
+    std::sort(indexes.begin(), indexes.end());
+#else
     qSort(indexes.begin(), indexes.end());
+#endif
     foreach(int index, indexes)
     {
       cmdLineArgs << indexedArgs[index];
