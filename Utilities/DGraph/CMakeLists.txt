@@ -18,13 +18,7 @@
 #
 ###########################################################################
 
-cmake_minimum_required(VERSION 2.8)
-
-foreach(policy CMP0003)
-  if(POLICY ${policy})
-    cmake_policy(SET ${policy} NEW)
-  endif()
-endforeach()
+cmake_minimum_required(VERSION 3.0)
 
 project(DGraph)
 
@@ -47,10 +41,8 @@ configure_file(
   ${CMAKE_CURRENT_BINARY_DIR}/${MY_EXPORT_HEADER_PREFIX}Export.h
   )
 
-# Add excutable
+# Add executable
 add_executable(${PROJECT_NAME}
   DGraph.cpp
   ${CTK_SOURCE_DIR}/Libs/Core/ctkDependencyGraph.h
   ${CTK_SOURCE_DIR}/Libs/Core/ctkDependencyGraph.cpp)
-
-

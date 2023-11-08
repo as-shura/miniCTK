@@ -287,7 +287,7 @@ void mbilog::TextBackendBase::FormatSmart(std::ostream &out, const LogMessage &l
   std::locale originalLocale = out.getloc();
   out.imbue(C);
 
-  out << std::fixed << std::setprecision(3) << ((double)std::clock())/CLOCKS_PER_SEC;
+  out << std::fixed << std::setprecision(3) << (static_cast<double>(std::clock()))/CLOCKS_PER_SEC;
 
   out.imbue( originalLocale );
 

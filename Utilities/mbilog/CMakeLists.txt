@@ -1,6 +1,6 @@
 project(mbilog)
 
-option(MBILOG_ENABLE_DEBUG_MESSAGES "Enable extra debug log output" ON)
+option(MBILOG_ENABLE_DEBUG_MESSAGES "Enable extra debug log output" OFF)
 mark_as_advanced(MBILOG_ENABLE_DEBUG_MESSAGES)
 
 if(MBILOG_ENABLE_DEBUG_MESSAGES)
@@ -15,5 +15,5 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/mbilogConfig.h.in"
 
 mitk_create_module(
   NO_INIT
-  WARNINGS_AS_ERRORS
+  mbilog
 )
