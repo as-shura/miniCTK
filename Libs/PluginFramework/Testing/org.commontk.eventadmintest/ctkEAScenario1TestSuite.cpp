@@ -59,7 +59,7 @@ void ctkEAScenario1EventConsumer::runTest()
     /* Claims the reference of the EventAdmin Service */
     eventAdminRef = context->getServiceReference<ctkEventAdmin>();
 
-    /* assert that a reference is aquired */
+    /* assert that a reference is acquired */
     QVERIFY2(eventAdminRef, "Should be able to get reference to ctkEventAdmin service");
 
     /* get the service  */
@@ -101,8 +101,8 @@ void ctkEAScenario1EventConsumer::cleanup()
   {
     throw exc;
   }
-  QCOMPARE(messagesSent, synchMessageExpectedNumber); //"Not all synch messages recieved"
-  QCOMPARE(messagesSent, asynchMessageExpectedNumber); //"Not all asynch messages recieved"
+  QCOMPARE(messagesSent, synchMessageExpectedNumber); //"Not all synch messages received"
+  QCOMPARE(messagesSent, asynchMessageExpectedNumber); //"Not all asynch messages received"
 }
 
 //----------------------------------------------------------------------------
@@ -136,7 +136,7 @@ void ctkEAScenario1EventConsumer::handleEvent(const ctkEvent& event)
     /* check if message is null */
     if(!message.isNull())
     {
-      /* its a syncronous message */
+      /* its a synchronous message */
       numOfsynchMessages++;
       /* print that a message is received */
       qDebug() << "received a synchronous event with message:" << message;
@@ -144,7 +144,7 @@ void ctkEAScenario1EventConsumer::handleEvent(const ctkEvent& event)
       int aquiredNumber= message.toInt();
       /* assert that the message is the expected one */
       QVERIFY2(synchMessageExpectedNumber == aquiredNumber,
-               qPrintable(QString("Expected syncronous message number: %1 got: %2 - order NOT conserved")
+               qPrintable(QString("Expected synchronous message number: %1 got: %2 - order NOT conserved")
                .arg(synchMessageExpectedNumber).arg(aquiredNumber)));
 
       /* the next messages of this type should be +1 */
@@ -161,7 +161,7 @@ void ctkEAScenario1EventConsumer::handleEvent(const ctkEvent& event)
         int aquiredNumber= message.toInt();
         /* assert that the message is the expected one */
         QVERIFY2(asynchMessageExpectedNumber==aquiredNumber,
-                 qPrintable(QString("Expected asyncronous message number: %1 got: %2 - order NOT conserved")
+                 qPrintable(QString("Expected asynchronous message number: %1 got: %2 - order NOT conserved")
                  .arg(asynchMessageExpectedNumber).arg(aquiredNumber)));
 
         /* the next messages of this type should be +1 */
@@ -172,11 +172,11 @@ void ctkEAScenario1EventConsumer::handleEvent(const ctkEvent& event)
     /* assert that the messages property is not null */
     QVERIFY2(!message.isNull(), "Message should not be null in ");
 
-    /* assert that the messages of syncronous type are not too many */
+    /* assert that the messages of synchronous type are not too many */
     QVERIFY2(numOfsynchMessages < messagesSent+1,
              "to many synchronous messages in handleEvent()");
 
-    /* assert that the messsage of the asyncronous type are not too many */
+    /* assert that the message of the asynchronous type are not too many */
     QVERIFY2(numOfasynchMessages < messagesSent+1,
              "to many asynchronous messages in handleEvent()");
 
@@ -209,7 +209,7 @@ void ctkEAScenario1EventPublisher::runTest()
   /* Claims the reference of the EventAdmin Service */
   serviceReference = context->getServiceReference<ctkEventAdmin>();
 
-  /* assert that a reference is aquired */
+  /* assert that a reference is acquired */
   QVERIFY2(serviceReference, "Should be able to get reference to ctkEventAdmin service");
 
   /* get the service  */
@@ -228,7 +228,7 @@ void ctkEAScenario1EventPublisher::runTest()
   connect(&thread, SIGNAL(started()), SLOT(sendEvents()));
 
   /* print that the test has started */
-  qDebug() << "Testing synchronus delivery";
+  qDebug() << "Testing synchronous delivery";
   thread.start();
 
   /* wait until thread is dead */

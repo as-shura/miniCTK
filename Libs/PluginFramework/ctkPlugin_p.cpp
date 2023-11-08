@@ -349,6 +349,11 @@ void ctkPluginPrivate::finalizeActivation()
   case ctkPlugin::STARTING:
     if (operation.fetchAndAddOrdered(0) == ACTIVATING) return; // finalization already in progress.
     // Lazy activation; fall through to RESOLVED.
+#if (QT_VERSION >= QT_VERSION_CHECK(5,8,0))
+    Q_FALLTHROUGH();
+#else
+    /* FALLTHRU */
+#endif
   case ctkPlugin::RESOLVED:
   {
     //6:
@@ -529,7 +534,7 @@ void ctkPluginPrivate::update0(const QUrl& updateLocation, bool wasActive)
     {
       try
       {
-        this->q_func().data()->start();
+        this->q_func().toStrongRef()->start();
       }
       catch (const ctkPluginException& pe)
       {
@@ -541,7 +546,7 @@ void ctkPluginPrivate::update0(const QUrl& updateLocation, bool wasActive)
       const ctkPluginException& pe = dynamic_cast<const ctkPluginException&>(e);
       throw pe;
     }
-    catch (std::bad_cast)
+    catch (const std::bad_cast&)
     {
       throw ctkPluginException(QString("Failed to get update plugin: ") + e.what(),
                                ctkPluginException::UNSPECIFIED);
@@ -583,7 +588,7 @@ void ctkPluginPrivate::update0(const QUrl& updateLocation, bool wasActive)
    {
      try
      {
-       this->q_func().data()->start();
+       this->q_func().toStrongRef()->start();
      }
      catch (const ctkPluginException& pe)
      {

@@ -422,14 +422,14 @@ public:
    * {@link #STOP_TRANSIENT} option was set.
    * </ul>
    *
-   * @param options The options for stoping this bundle. See
+   * @param options The options for stopping this bundle. See
    *        {@link #STOP_TRANSIENT}.
    * @throws ctkPluginException If this plugin's <code>ctkPluginActivator</code>
    *         threw an exception.
    * @throws ctkIllegalStateException If this plugin has been uninstalled or this
    *         plugin tries to change its own state.
    */
-  virtual void stop(const StopOptions& options = 0);
+  virtual void stop(const StopOptions& options = StopOptions());
 
   /**
    * Updates this plugin from a <code>QUrl</code>.

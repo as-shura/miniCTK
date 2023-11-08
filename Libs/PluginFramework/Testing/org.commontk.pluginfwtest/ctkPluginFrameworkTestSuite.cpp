@@ -134,10 +134,10 @@ void ctkPluginFrameworkTestSuite::frame005a()
   QCOMPARE(QString("CommonTK"), headers.value(k));
 
   k = "Plugin-DocURL";
-  QCOMPARE(QString("http://www.commontk.org"), headers.value(k));
+  QCOMPARE(QString("http://commontk.org"), headers.value(k));
 
   k = "Plugin-ContactAddress";
-  QCOMPARE(QString("http://www.commontk.org"), headers.value(k));
+  QCOMPARE(QString("http://commontk.org"), headers.value(k));
 
   k = "Plugin-Category";
   QCOMPARE(QString("test"), headers.value(k));
@@ -189,8 +189,8 @@ void ctkPluginFrameworkTestSuite::frame018a()
   try
   {
     QObject* obj = pc->getService(ctkServiceReference());
-    qDebug() << "Got service object =" << obj->metaObject()->className() << ", excpected ctkInvalidArgumentException exception";
-    QFAIL("Got service object, excpected ctkInvalidArgumentException exception");
+    qDebug() << "Got service object =" << obj->metaObject()->className() << ", expected ctkInvalidArgumentException exception";
+    QFAIL("Got service object, expected ctkInvalidArgumentException exception");
   }
   catch (const ctkInvalidArgumentException& )
   {}
@@ -211,7 +211,7 @@ void ctkPluginFrameworkTestSuite::frame020a()
   {
     pA = ctkPluginFrameworkTestUtil::installPlugin(pc, "pluginA_test");
   }
-  catch (ctkPluginException& e)
+  catch (const ctkPluginException& e)
   {
     QFAIL(e.what());
   }
@@ -388,7 +388,7 @@ void ctkPluginFrameworkTestSuite::frame040a()
     qDebug() << "Expected exception" << pe;
     exception = true;
   }
-  //      catch (SecurityException secA) {
+  //      catch (const SecurityException& secA) {
   //        QFAIL("framework test plugin " + secA + " :FRAME040A:FAIL");
   //        teststatus = false;
   //        exception = true;

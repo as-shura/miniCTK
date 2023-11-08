@@ -92,7 +92,6 @@ public:
   ctkPluginFrameworkLauncherPrivate()
     : fwFactory(0)
     , running(false)
-    , endSplashHandler(NULL)
     , processEnv(QProcessEnvironment::systemEnvironment())
   {
 #ifdef CMAKE_INTDIR
@@ -171,7 +170,7 @@ public:
   QString substituteVars(const QString& path)
   {
     QString buf;
-    bool varStarted = false; // indicates we are processing a var subtitute
+    bool varStarted = false; // indicates we are processing a var substitute
     QString var; // the current var key
     for (QString::const_iterator iter = path.begin(); iter != path.end(); ++iter)
     {
@@ -370,7 +369,6 @@ public:
   QScopedPointer<ctkPluginFrameworkFactory> fwFactory;
 
   bool running;
-  QRunnable* endSplashHandler;
 
   QScopedPointer<ctkDefaultApplicationLauncher> appLauncher;
   ctkServiceRegistration appLauncherRegistration;
@@ -421,7 +419,7 @@ QVariant ctkPluginFrameworkLauncher::run(QRunnable* endSplashHandler, const QVar
     Q_UNUSED(finalizer)
     try
     {
-      startup(d->endSplashHandler);
+      startup(endSplashHandler);
       if (ctkPluginFrameworkProperties::getProperty(PROP_IGNOREAPP).toBool() || d->isForcedRestart())
       {
         return argument;
@@ -451,7 +449,7 @@ QVariant ctkPluginFrameworkLauncher::run(QRunnable* endSplashHandler, const QVar
   if (ctkPluginFrameworkProperties::getProperty(PROP_EXITCODE).isNull())
   {
     ctkPluginFrameworkProperties::setProperty(PROP_EXITCODE, "13");
-    ctkPluginFrameworkProperties::setProperty(PROP_EXITDATA, QString("An error has occured. See the console output and log file for details."));
+    ctkPluginFrameworkProperties::setProperty(PROP_EXITDATA, QString("An error has occurred. See the console output and log file for details."));
   }
   return QVariant();
 }
@@ -502,7 +500,7 @@ QVariant ctkPluginFrameworkLauncher::run(const QVariant& argument)
 }
 
 //----------------------------------------------------------------------------
-ctkPluginContext* ctkPluginFrameworkLauncher::startup(QRunnable* /*endSplashHandler*/)
+ctkPluginContext* ctkPluginFrameworkLauncher::startup(QRunnable* endSplashHandler)
 {
   if (d->running)
   {
@@ -522,6 +520,12 @@ ctkPluginContext* ctkPluginFrameworkLauncher::startup(QRunnable* /*endSplashHand
   d->loadBasicPlugins();
 
   d->running = true;
+  
+  if (endSplashHandler != NULL)
+  {
+    endSplashHandler->run();
+  }
+  
   return d->fwFactory->getFramework()->getPluginContext();
 }
 
