@@ -28,8 +28,8 @@ if(NOT DEFINED Poco_DIR)
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-build
     PREFIX ${proj}${ep_suffix}
-    URL https://github.com/pocoproject/poco/archive/poco-1.6.1-release.tar.gz
-    URL_MD5 208872b13d282dfb0f0580fc11df96f3
+    URL https://github.com/pocoproject/poco/archive/refs/tags/poco-1.12.5p1-release.tar.gz
+    #URL_MD5 208872b13d282dfb0f0580fc11df96f3
     #INSTALL_COMMAND ""
     CMAKE_CACHE_ARGS
       ${ep_common_cache_args}

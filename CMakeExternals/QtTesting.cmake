@@ -24,10 +24,15 @@ endif()
 
 if(NOT DEFINED QtTesting_DIR)
 
-  set(revision_tag a5c52c52516d419802ee1e4b1800ee3aabc5cdd2)
+  if("${CMAKE_CXX_STANDARD}" STREQUAL "98")
+    set(revision_tag c44b32fdea827be737e8c2f5608ffbc2e3bd08b2)
+  else()
+    set(revision_tag a86bee55104f553a1cb82b9cf0b109d9f1e95dbf) # ctk-2019-03-14-b5324a2
+  endif()
   if(${proj}_REVISION_TAG)
     set(revision_tag ${${proj}_REVISION_TAG})
   endif()
+  ExternalProject_Message(${proj} "${proj}[revision_tag:${revision_tag}]")
 
   set(location_args )
   if(${proj}_URL)
@@ -36,7 +41,7 @@ if(NOT DEFINED QtTesting_DIR)
     set(location_args GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
                       GIT_TAG ${revision_tag})
   else()
-    set(location_args GIT_REPOSITORY "${git_protocol}://github.com/Kitware/QtTesting.git"
+    set(location_args GIT_REPOSITORY "https://github.com/commontk/QtTesting.git"
                       GIT_TAG ${revision_tag})
   endif()
 
@@ -49,18 +54,26 @@ if(NOT DEFINED QtTesting_DIR)
       -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET})
   endif()
 
-  set(proj_qt_args
-	  -DQtTesting_QT_VERSION:STRING=${CTK_QT_VERSION})
-  if(CTK_QT_VERSION VERSION_LESS "5")
-    list(APPEND proj_qt_args
-      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-    )
+  set(ep_cache_args
+    -DQtTesting_QT_VERSION:STRING=${CTK_QT_VERSION})
+  if(CTK_QT_VERSION VERSION_EQUAL "5")
+    list(APPEND ep_cache_args
+      -DQt5_DIR:PATH=${Qt5_DIR}
+      )
+    # XXX Backward compatible way
+    if(DEFINED CMAKE_PREFIX_PATH)
+      list(APPEND ep_cache_args
+        -DCMAKE_PREFIX_PATH:PATH=${CMAKE_PREFIX_PATH}
+        )
+    endif()
+  elseif(CTK_QT_VERSION VERSION_EQUAL "6")
+    list(APPEND ep_cache_args
+      -DQt6_DIR:PATH=${Qt6_DIR}
+      )
   else()
-    list(APPEND proj_qt_args
-      -DCMAKE_PREFIX_PATH:FILEPATH=${CMAKE_PREFIX_PATH}
-    )
+    message(FATAL_ERROR "Support for Qt${CTK_QT_VERSION} is not implemented")
   endif()
-  message(STATUS "Adding project:${proj}")
+
   ExternalProject_Add(${proj}
     ${${proj}_EXTERNAL_PROJECT_ARGS}
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
@@ -69,7 +82,7 @@ if(NOT DEFINED QtTesting_DIR)
     ${location_args}
     CMAKE_CACHE_ARGS
       ${ep_common_cache_args}
-	  ${proj_qt_args}
+      ${ep_cache_args}
       -DBUILD_SHARED_LIBS:BOOL=ON
     DEPENDS
       ${${proj}_DEPENDENCIES}
