@@ -26,9 +26,7 @@
 #include "ctkCoreExport.h"
 
 // Qt includes
-#if QT_VERSION >= 0x50000
 #include <QtMessageHandler>
-#endif
 
 //------------------------------------------------------------------------------
 /// \ingroup Core
@@ -39,18 +37,14 @@ class CTK_CORE_EXPORT ctkErrorLogQtMessageHandler : public ctkErrorLogAbstractMe
 public:
   typedef ctkErrorLogAbstractMessageHandler Superclass;
 
-  ctkErrorLogQtMessageHandler();
+  ctkErrorLogQtMessageHandler(QObject* parent = 0);
 
   static QString HandlerName;
 
   virtual QString handlerName()const;
   virtual void setEnabledInternal(bool value);
 
-#if QT_VERSION >= 0x50000
   QtMessageHandler SavedQtMessageHandler;
-#else
-  QtMsgHandler SavedQtMessageHandler;
-#endif
 };
 
 #endif

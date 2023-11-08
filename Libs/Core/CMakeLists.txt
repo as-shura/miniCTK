@@ -37,10 +37,17 @@ set(KIT_SRCS
   ctkCallback.h
   ctkCommandLineParser.cpp
   ctkCommandLineParser.h
+  ctkCoreSettings.cpp
+  ctkCoreSettings.h
+  ctkCoreTestingUtilities.cpp
+  ctkCoreTestingUtilities.tpp
+  ctkCoreTestingUtilities.h
   ctkDependencyGraph.cpp
   ctkDependencyGraph.h
   ctkErrorLogAbstractMessageHandler.cpp
   ctkErrorLogAbstractMessageHandler.h
+  ctkErrorLogAbstractModel.cpp
+  ctkErrorLogAbstractModel.h
   ctkErrorLogContext.h
   ctkErrorLogFDMessageHandler.cpp
   ctkErrorLogFDMessageHandler.h
@@ -70,6 +77,7 @@ set(KIT_SRCS
   ctkSingleton.h
   ctkUtils.cpp
   ctkUtils.h
+  ctkUtils.tpp
   ctkValueProxy.cpp
   ctkValueProxy.h
   ctkWorkflow.h
@@ -95,7 +103,9 @@ set(KIT_MOC_SRCS
   ctkBooleanMapper.h
   ctkCallback.h
   ctkCommandLineParser.h
+  ctkCoreSettings.h
   ctkErrorLogAbstractMessageHandler.h
+  ctkErrorLogAbstractModel.h
   ctkErrorLogFDMessageHandler_p.h
   ctkErrorLogLevel.h
   ctkErrorLogQtMessageHandler.h
@@ -126,9 +136,7 @@ set(KIT_target_libraries)
 
 ctkFunctionGetTargetLibraries(KIT_target_libraries)
 
-if(CTK_QT_VERSION VERSION_GREATER "4")
-  list(APPEND KIT_target_libraries Qt5::Core)
-endif()
+list(APPEND KIT_target_libraries Qt${CTK_QT_VERSION}::Core)
 
 ctkMacroBuildLib(
   NAME ${PROJECT_NAME}

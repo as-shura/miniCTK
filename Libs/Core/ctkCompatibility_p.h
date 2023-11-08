@@ -18,27 +18,21 @@
 
 =========================================================================*/
 
-// Qt includes
-#include <QDebug>
+#ifndef __ctkCompatibility_p_h
+#define __ctkCompatibility_p_h
 
-// CTK includes
-#include "ctkDummyPlugin.h"
+//
+// This file is not part of the CTK API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-//-----------------------------------------------------------------------------
-ctkDummyPlugin::ctkDummyPlugin(QObject* parent)
-  :QObject(parent)
-{
-  qDebug() << "ctkDummyPlugin()";
-}
+#include <QtGlobal>
 
-ctkDummyPlugin::~ctkDummyPlugin()
-{
-  qDebug() << "~ctkDummyPlugin()";
-}
+#if (QT_VERSION < QT_VERSION_CHECK(5, 4, 0))
+#define qUtf8Printable(string) QString(string).toUtf8().constData()
+#endif
 
-
-//-----------------------------------------------------------------------------
-void ctkDummyPlugin::dummyInterface()
-{
-  qDebug() << "dummyInterface()";
-}
+#endif

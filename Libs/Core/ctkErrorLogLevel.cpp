@@ -24,7 +24,8 @@
 #include <QMetaEnum>
 
 // --------------------------------------------------------------------------
-ctkErrorLogLevel::ctkErrorLogLevel()
+ctkErrorLogLevel::ctkErrorLogLevel(QObject* parent)
+  : Superclass(parent)
 {
   qRegisterMetaType<ctkErrorLogLevel::LogLevel>("ctkErrorLogLevel::LogLevel");
 }
@@ -41,4 +42,11 @@ QString ctkErrorLogLevel::logLevelAsString(ctkErrorLogLevel::LogLevel logLevel)
   QMetaEnum logLevelEnum = ctkErrorLogLevel::staticMetaObject.enumerator(0);
   Q_ASSERT(QString("LogLevel").compare(logLevelEnum.name()) == 0);
   return QLatin1String(logLevelEnum.valueToKey(logLevel));
+}
+
+// --------------------------------------------------------------------------
+ctkErrorLogLevel::LogLevel ctkErrorLogLevel::logLevelFromString(const QString& logLevelStr)
+{
+  QMetaEnum logLevelEnum = ctkErrorLogLevel::staticMetaObject.enumerator(0);
+  return ctkErrorLogLevel::LogLevel(logLevelEnum.keyToValue(logLevelStr.toLocal8Bit()));
 }

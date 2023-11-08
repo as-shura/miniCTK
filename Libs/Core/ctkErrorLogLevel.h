@@ -34,7 +34,8 @@ class CTK_CORE_EXPORT ctkErrorLogLevel : public QObject
   Q_OBJECT
   Q_FLAGS(LogLevel)
 public:
-  ctkErrorLogLevel();
+  typedef QObject Superclass;
+  ctkErrorLogLevel(QObject* parent = 0);
 
   enum LogLevel
     {
@@ -54,6 +55,7 @@ public:
   QString operator ()(LogLevel logLevel);
 
   static QString logLevelAsString(ctkErrorLogLevel::LogLevel logLevel);
+  static ctkErrorLogLevel::LogLevel logLevelFromString(const QString& logLevelStr);
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(ctkErrorLogLevel::LogLevels)
 

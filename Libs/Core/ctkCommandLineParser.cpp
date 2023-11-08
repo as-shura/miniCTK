@@ -431,7 +431,7 @@ QHash<QString, QVariant> ctkCommandLineParser::parseArguments(const QStringList&
       else if (numberOfParametersToProcess > 0)
         {
         QString missingParameterError =
-            "Argument %1 has %2 value(s) associated whereas exacly %3 are expected.";
+            "Argument %1 has %2 value(s) associated whereas exactly %3 are expected.";
         for(int j=1; j <= numberOfParametersToProcess; ++j)
           {
           if (i + j >= arguments.size())
@@ -447,8 +447,10 @@ QHash<QString, QVariant> ctkCommandLineParser::parseArguments(const QStringList&
             {
             qDebug() << "  Processing parameter" << j << ", value:" << parameter;
             }
-          if (this->argumentAdded(parameter))
+          if (this->Internal->argumentDescription(parameter) != 0)
             {
+            // we've found a known argument, it means there are no more
+            // parameter for the current argument
             this->Internal->ErrorString =
                 missingParameterError.arg(argument).arg(j-1).arg(numberOfParametersToProcess);
             if (this->Internal->Debug) { qDebug() << this->Internal->ErrorString; }
@@ -473,17 +475,20 @@ QHash<QString, QVariant> ctkCommandLineParser::parseArguments(const QStringList&
         {
         if (this->Internal->Debug)
           {
-          qDebug() << "  Proccessing StringList ...";
+          qDebug() << "  Processing StringList ...";
           }
         int j = 1;
         while(j + i < arguments.size())
           {
-          if (this->argumentAdded(arguments.at(j + i)))
+          if (this->Internal->argumentDescription(arguments.at(j + i)) != 0)
             {
+            // we've found a known argument, it means there are no more
+            // parameter for the current argument
             if (this->Internal->Debug)
               {
               qDebug() << "  No more parameter for" << argument;
               }
+            j--; // this parameter does not belong to current argument
             break;
             }
           QString parameter = arguments.at(j + i);

@@ -37,11 +37,7 @@ class ctkFactoryLibraryItem : public ctkAbstractFactoryFileBasedItem<BaseClassTy
 
 public:
 
-#if QT_VERSION < 0x50000
-  typedef void* SymbolAddressType;
-#else
   typedef QFunctionPointer SymbolAddressType;
-#endif
 
 protected:
   typedef typename QHash<QString, SymbolAddressType>::const_iterator ConstIterator;
@@ -49,20 +45,23 @@ protected:
 
 public:
   //explicit ctkFactoryLibraryItem(const QString& path);
- 
+
   virtual bool load();
 
   ///
   /// Set list of required symbols
   void setSymbols(const QStringList& symbols);
 
-  /// 
+  /// Set lookup hints for symbol resolution. See QLibrary documentation.
+  void setLoadHints(QLibrary::LoadHints hints);
+
+  ///
   /// \brief Resolve symbols
   /// \note The function will return False if it fails to resolve one
   /// of the required symbols set using setSymbols(const QStringList&)
   bool resolve();
-  
-  /// 
+
+  ///
   /// Get symbol address
   SymbolAddressType symbolAddress(const QString& symbol)const;
 

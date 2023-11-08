@@ -18,27 +18,15 @@
 
 =========================================================================*/
 
-// Qt includes
-#include <QDebug>
+#ifndef __ctkCompilerDetections_p_h
+#define __ctkCompilerDetections_p_h
 
-// CTK includes
-#include "ctkDummyPlugin.h"
+//
+// This file is not part of the CTK API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-//-----------------------------------------------------------------------------
-ctkDummyPlugin::ctkDummyPlugin(QObject* parent)
-  :QObject(parent)
-{
-  qDebug() << "ctkDummyPlugin()";
-}
-
-ctkDummyPlugin::~ctkDummyPlugin()
-{
-  qDebug() << "~ctkDummyPlugin()";
-}
-
-
-//-----------------------------------------------------------------------------
-void ctkDummyPlugin::dummyInterface()
-{
-  qDebug() << "dummyInterface()";
-}
+#endif

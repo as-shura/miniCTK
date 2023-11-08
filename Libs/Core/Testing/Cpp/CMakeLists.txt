@@ -26,6 +26,9 @@ set(KITTests_SRCS
   ctkBooleanMapperTest.cpp
   ctkCallbackTest1.cpp
   ctkCommandLineParserTest1.cpp
+  ctkCoreSettingsTest.cpp
+  ctkCoreTestingMacrosTest.cpp
+  ctkCoreTestingUtilitiesTest.cpp
   ctkExceptionTest.cpp
   ctkFileLoggerTest.cpp
   ctkHighPrecisionTimerTest.cpp
@@ -33,7 +36,9 @@ set(KITTests_SRCS
   ctkLoggerTest1.cpp
   ctkModelTesterTest1.cpp
   ctkModelTesterTest2.cpp
+  ctkUtf8Test1.cpp
   ctkUtilsCopyDirRecursivelyTest1.cpp
+  ctkUtilsIsDirEmptyTest1.cpp
   ctkUtilsQtHandleToStringTest1.cpp
   ctkUtilsTest.cpp
   ctkUtilsTest1.cpp
@@ -49,7 +54,6 @@ set(KITTests_SRCS
   ctkWorkflowTest2.cpp
   ctkWorkflowTest3.cpp
   )
-
 if(HAVE_BFD)
   list(APPEND KITTests_SRCS
     ctkBinaryFileDescriptorTest1.cpp
@@ -90,37 +94,39 @@ set(Tests_Helpers_MOC_SRCS
 
 set(Tests_Helpers_MOC_CPPS
   ctkBooleanMapperTest.cpp
+  ctkCoreSettingsTest.cpp
   ctkFileLoggerTest.cpp
   ctkLinearValueProxyTest.cpp
   ctkUtilsTest.cpp
   )
 
 set(Tests_Helpers_MOC_CPP)
-if(CTK_QT_VERSION VERSION_GREATER "4")
+if(CTK_QT_VERSION VERSION_EQUAL "5")
   qt5_wrap_cpp(Tests_Helpers_MOC_CPP ${Tests_Helpers_MOC_SRCS})
   qt5_generate_mocs(${Tests_Helpers_MOC_CPPS})
 else()
-  QT4_WRAP_CPP(Tests_Helpers_MOC_CPP ${Tests_Helpers_MOC_SRCS})
-  QT4_GENERATE_MOCS(${Tests_Helpers_MOC_CPPS})
+  message(FATAL_ERROR "Support for Qt${CTK_QT_VERSION} is not implemented")
 endif()
 
 if(HAVE_BFD)
-  add_executable(ctkBinaryFileDescriptorTestHelper ctkBinaryFileDescriptorTestHelper.cpp)
+  ctk_add_executable_utf8(ctkBinaryFileDescriptorTestHelper ctkBinaryFileDescriptorTestHelper.cpp)
 endif()
 
-if(WIN32)
+if(MSVC)
   add_definitions( /D _CRT_SECURE_NO_WARNINGS)
 endif()
 
 #
 # Test executable
 #
-add_executable(${KIT}CppTests ${Tests} ${Tests_Helpers_SRCS} ${Tests_Helpers_MOC_CPP})
+ctk_add_executable_utf8(${KIT}CppTests ${Tests} ${Tests_Helpers_SRCS} ${Tests_Helpers_MOC_CPP})
 target_link_libraries(${KIT}CppTests ${LIBRARY_NAME} ${CTK_BASE_LIBRARIES} CTKDummyPlugin)
 
-if(CTK_QT_VERSION VERSION_GREATER "4")
-  qt5_use_modules(${KIT}CppTests Test Widgets)
-endif()
+find_package(Qt${CTK_QT_VERSION} COMPONENTS Test Widgets REQUIRED)
+target_link_libraries(${KIT}CppTests
+  Qt${CTK_QT_VERSION}::Test
+  Qt${CTK_QT_VERSION}::Widgets
+  )
 
 if(UNIX AND NOT APPLE)
   target_link_libraries(${KIT}CppTests rt)
@@ -135,13 +141,18 @@ SIMPLE_TEST( ctkAbstractLibraryFactoryTest1 $<TARGET_FILE:CTKDummyPlugin> )
 SIMPLE_TEST( ctkAbstractObjectFactoryTest1 )
 SIMPLE_TEST( ctkAbstractPluginFactoryTest1 $<TARGET_FILE:CTKDummyPlugin> )
 SIMPLE_TEST( ctkAbstractQObjectFactoryTest1 )
-SIMPLE_TEST( ctkBackTraceTest )
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+  SIMPLE_TEST( ctkBackTraceTest )
+endif()
 if(HAVE_BFD)
   SIMPLE_TEST( ctkBinaryFileDescriptorTest1 $<TARGET_FILE:ctkBinaryFileDescriptorTestHelper> )
 endif()
 SIMPLE_TEST( ctkBooleanMapperTest )
 SIMPLE_TEST( ctkCallbackTest1 )
 SIMPLE_TEST( ctkCommandLineParserTest1 )
+SIMPLE_TEST( ctkCoreSettingsTest )
+SIMPLE_TEST( ctkCoreTestingMacrosTest )
+SIMPLE_TEST( ctkCoreTestingUtilitiesTest )
 SIMPLE_TEST( ctkDependencyGraphTest1 )
 SIMPLE_TEST( ctkDependencyGraphTest2 )
 SIMPLE_TEST( ctkExceptionTest )
@@ -156,6 +167,7 @@ SIMPLE_TEST( ctkPimplTest1 )
 SIMPLE_TEST( ctkScopedCurrentDirTest1 )
 SIMPLE_TEST( ctkSingletonTest1 )
 SIMPLE_TEST( ctkUtilsCopyDirRecursivelyTest1 )
+SIMPLE_TEST( ctkUtilsIsDirEmptyTest1 )
 SIMPLE_TEST( ctkUtilsQtHandleToStringTest1 )
 SIMPLE_TEST( ctkUtilsTest )
 SIMPLE_TEST( ctkUtilsTest1 )

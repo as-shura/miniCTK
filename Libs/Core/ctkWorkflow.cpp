@@ -80,7 +80,7 @@ bool ctkWorkflowPrivate::addStep(ctkWorkflowStep* step)
   if (step->workflow() != q)
     {
     // Check if steps are not already associated with a different workflow
-    QString msg("addStep - step [%1] already associated with a different workfow !");
+    QString msg("addStep - step [%1] already associated with a different workflow !");
     qWarning() << msg.arg(step->id());
     return false;
     }
@@ -129,7 +129,7 @@ bool ctkWorkflowPrivate::hasDuplicateTransition(ctkWorkflowStep* origin, ctkWork
 
   Q_ASSERT(origin);
   Q_ASSERT(destination);
-  Q_ASSERT(directionality == ctkWorkflow::Forward || ctkWorkflow::Backward);
+  Q_ASSERT(directionality == ctkWorkflow::Forward || directionality == ctkWorkflow::Backward);
 
   ctkWorkflowPrivate::StepListType stepList;
   ctkWorkflowStep* targetStep = 0;
@@ -161,7 +161,7 @@ bool ctkWorkflowPrivate::hasTransitionWithSameBranchId(ctkWorkflowStep* origin, 
 {
   Q_ASSERT(origin);
   Q_ASSERT(destination);
-  Q_ASSERT(directionality == ctkWorkflow::Forward || ctkWorkflow::Backward);
+  Q_ASSERT(directionality == ctkWorkflow::Forward || directionality == ctkWorkflow::Backward);
   Q_ASSERT(!branchId.isEmpty());
 
   QList<QString> branchIdList;
