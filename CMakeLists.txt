@@ -23,6 +23,7 @@ cmake_minimum_required(VERSION 3.2)
 foreach(p
   CMP0054 # CMake 3.1
   CMP0042
+  CMP0063
   )
   if(POLICY ${p})
     cmake_policy(SET ${p} NEW)
@@ -36,6 +37,8 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 set(EXTERNAL_PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CMakeExternals)
 set(EXTERNAL_PROJECT_FILE_PREFIX "")
 include(ExternalProject)
+include(GenerateExportHeader)
+include(FeatureSummary)
 include(ctkMacroCheckExternalProjectDependency)
 
 include(mitkFunctionGetGccVersion)
@@ -48,8 +51,11 @@ include(mitkFunctionWhitelists)
 include(mitkFunctionAddExternalProject)
 include(mitkFunctionInstallExternalCMakeProject)
 include(mitkFunctionCreateModule)
-include(mitkFunctionUseModules)
 include(mitkFunctionCheckModuleDependencies)
+include(mitkFunctionUseModules)
+include(mitkFunctionOrganizeSources)
+include(mitkFunctionCreatePlugin)
+include(mitkFunctionInstallCTKPlugin)
 #-----------------------------------------------------------------------------
 if(APPLE)
   # Note: By setting CMAKE_OSX_* variables before any enable_language() or project() calls,
@@ -589,6 +595,11 @@ ctk_lib_option(PluginFramework
                "Build the Plugin Framework" OFF
                CTK_ENABLE_PluginFramework)
 
+ctk_lib_option(Widgets
+          "Build the Widgets library" OFF
+          CTK_ENABLE_Widgets OR (CTK_ENABLE_DICOMApplicationHosting AND CTK_BUILD_EXAMPLES) OR CTK_USE_QTTESTING)
+
+
 ctk_lib_option(CommandLineModules/Core
 	       "Build the Command Line Module core library" OFF)
 
@@ -656,6 +667,12 @@ set(plugin_list
   org.commontk.metatype
   org.blueberry.core.runtime
   org.blueberry.ui.qt
+  #org.blueberry.core.expressions
+  #org.blueberry.core.jobs
+  #org.blueberry.ui.qt.help
+  #org.blueberry.ui.qt.log
+  #org.blueberry.ui.qt.objectinspector
+
   )
 
 if(CTK_QT_VERSION VERSION_LESS "5")
@@ -699,6 +716,12 @@ endif()
 # three arguments. This expression should only contain build option names
 # which belong to leafs in the required dependency tree.
 
+# The CTK Qt Widgets. This will enable the Qt Widget library only.
+# It might trigger the enabling of other widget libraries in combination
+# with other enabled options.
+ctk_enable_option(Widgets "Enable Qt Widget libraries" OFF
+                  CTK_LIB_Widgets)
+                  
 # The CTK Plugin Framework, a dynamic component system based on OSGi.
 # This will enable only the framework itself.
 ctk_enable_option(PluginFramework "Enable Plugin Framework" OFF
