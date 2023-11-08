@@ -18,6 +18,12 @@
 
 =========================================================================*/
 
+// Qt includes
+#include <QtGlobal>
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
+#include <QLinkedList>
+#endif
+
 // CTK includes
 #include "ctkUtils.h"
 #include "ctkTest.h"
@@ -25,6 +31,7 @@
 // STD includes
 #include <iostream>
 #include <limits>
+#include <list>
 
 // ----------------------------------------------------------------------------
 class ctkUtilsTester: public QObject
@@ -41,6 +48,18 @@ private slots:
 
   void testSignificantDecimals();
   void testSignificantDecimals_data();
+
+  void testQStringListToQSet();
+  void testQStringListToQSet_data();
+
+  void testQSetToQStringList();
+  void testQSetToQStringList_data();
+
+  void testRemoveOne();
+  void testRemoveOne_data();
+
+  void testTakeFirst();
+  void testTakeFirst_data();
 };
 
 // ----------------------------------------------------------------------------
@@ -190,9 +209,9 @@ void ctkUtilsTester::testSignificantDecimals_data()
   QTest::newRow("123456.3333334 -> 2") << 123456.3333334 << -1 << 2;
   QTest::newRow("123456.00122 -> 5") << 123456.00122 << -1 << 5;
   QTest::newRow("123456.00123 -> 5") << 123456.00123 << -1 << 5;
-  // internally representated as 123456.001109999997425
+  // internally represented as 123456.001109999997425
   QTest::newRow("123456.00111 -> 5") << 123456.00111 << -1 << 5;
-  // internally representated as 123456.270000000004075
+  // internally represented as 123456.270000000004075
   QTest::newRow("123456.26999999999999996 -> 2")
     << 123456.26999999999999996 << -1 << 2;
   QTest::newRow("123456.863899999999987 -> 4") << 123456.863899999999987 << -1 << 4;
@@ -228,9 +247,9 @@ void ctkUtilsTester::testSignificantDecimals_data()
   QTest::newRow("123456.3333334 -> 2") << 123456.3333334 << 3 << 2;
   QTest::newRow("123456.00122 -> 5") << 123456.00122 << 3 << 5;
   QTest::newRow("123456.00123 -> 5") << 123456.00123 << 3 << 5;
-  // internally representated as 123456.001109999997425
+  // internally represented as 123456.001109999997425
   QTest::newRow("123456.00111 -> 5") << 123456.00111 << 3 << 5;
-  // internally representated as 123456.270000000004075
+  // internally represented as 123456.270000000004075
   QTest::newRow("123456.26999999999999996 -> 2")
     << 123456.26999999999999996 << 3 << 2;
   QTest::newRow("123456.863899999999987 -> 4") << 123456.863899999999987 << 3 << 4;
@@ -250,7 +269,140 @@ void ctkUtilsTester::testSignificantDecimals_data()
 }
 
 // ----------------------------------------------------------------------------
+void ctkUtilsTester::testQStringListToQSet()
+{
+  QFETCH(QStringList, input);
+  QFETCH(QSet<QString>, output);
+
+  QCOMPARE(ctk::qStringListToQSet(input), output);
+}
+
+// ----------------------------------------------------------------------------
+void ctkUtilsTester::testQStringListToQSet_data()
+{
+  QTest::addColumn<QStringList>("input");
+  QTest::addColumn< QSet<QString> >("output");
+
+  QTest::newRow("0")
+      << (QStringList() << "foo" << "bar" << "foo")
+      << (QSet<QString>() << "foo" << "bar");
+}
+
+// ----------------------------------------------------------------------------
+void ctkUtilsTester::testQSetToQStringList()
+{
+  QFETCH(QSet<QString>, input);
+  QFETCH(QStringList, output);
+
+  QStringList current = ctk::qSetToQStringList(input);
+  current.sort();
+
+  QCOMPARE(current, output);
+}
+
+// ----------------------------------------------------------------------------
+void ctkUtilsTester::testQSetToQStringList_data()
+{
+  QTest::addColumn< QSet<QString> >("input");
+  QTest::addColumn< QStringList >("output");
+
+  QTest::newRow("0")
+      << (QSet<QString>() << "foo" << "bar")
+      << (QStringList() << "bar" << "foo");
+}
+
+// ----------------------------------------------------------------------------
+namespace
+{
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+  typedef std::list<QString> CTKUtilsTestListType;
+
+  CTKUtilsTestListType ctkUtilsTestList(QStringList::Iterator first, QStringList::Iterator last)
+  {
+    return CTKUtilsTestListType(first, last);
+  }
+#else
+  typedef QLinkedList<QString> CTKUtilsTestListType;
+  CTKUtilsTestListType ctkUtilsTestList(QStringList::Iterator first, QStringList::Iterator last)
+  {
+    CTKUtilsTestListType list;
+    std::copy(first, last, std::back_inserter(list));
+    return list;
+  }
+#endif
+};
+
+// ----------------------------------------------------------------------------
+void ctkUtilsTester::testRemoveOne()
+{
+  QFETCH(QStringList, inputValues);
+  QFETCH(QString, valueToRemove);
+  QFETCH(bool, removed);
+  QFETCH(QStringList, expectedValues);
+
+  CTKUtilsTestListType input = ctkUtilsTestList(inputValues.begin(), inputValues.end());
+
+  bool result = ctk::removeOne(input, valueToRemove);
+  QCOMPARE(result, removed);
+
+  CTKUtilsTestListType expected = ctkUtilsTestList(expectedValues.begin(), expectedValues.end());
+  QCOMPARE(input, expected);
+}
+
+// ----------------------------------------------------------------------------
+void ctkUtilsTester::testRemoveOne_data()
+{
+  QTest::addColumn< QStringList >("inputValues");
+  QTest::addColumn< QString >("valueToRemove");
+  QTest::addColumn< bool >("removed");
+  QTest::addColumn< QStringList >("expectedValues");
+
+  QTest::newRow("0")
+      << QStringList()
+      << "rainbow" << false
+      << QStringList();
+
+  QTest::newRow("1")
+      << (QStringList() << "sun" << "cloud" << "rain")
+      << "rainbow" << false
+      << (QStringList() << "sun" << "cloud" << "rain");
+
+  QTest::newRow("2")
+      << (QStringList() << "sun" << "cloud" << "sun" << "rain")
+      << "sun" << true
+      << (QStringList() << "cloud" << "sun" << "rain");
+}
+
+// ----------------------------------------------------------------------------
+void ctkUtilsTester::testTakeFirst()
+{
+  QFETCH(QStringList, inputValues);
+  QFETCH(QString, first);
+  QFETCH(QStringList, expectedValues);
+
+  CTKUtilsTestListType input = ctkUtilsTestList(inputValues.begin(), inputValues.end());
+
+  QString result = ctk::takeFirst(input);
+  QCOMPARE(result, first);
+
+  CTKUtilsTestListType expected = ctkUtilsTestList(expectedValues.begin(), expectedValues.end());
+  QCOMPARE(input, expected);
+}
+
+// ----------------------------------------------------------------------------
+void ctkUtilsTester::testTakeFirst_data()
+{
+  QTest::addColumn< QStringList >("inputValues");
+  QTest::addColumn< QString >("first");
+  QTest::addColumn< QStringList >("expectedValues");
+
+  QTest::newRow("0")
+      << (QStringList() << "sun" << "cloud" << "sun" << "rain")
+      << "sun"
+      << (QStringList() << "cloud" << "sun" << "rain");
+}
+
+// ----------------------------------------------------------------------------
 CTK_TEST_MAIN(ctkUtilsTest)
 #include "moc_ctkUtilsTest.cpp"
-
 
