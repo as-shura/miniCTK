@@ -32,29 +32,28 @@ macro(ctkMacroInitProject test)
     foreach(FILE_NAME_ABS ${implementation_file_list})
       ## extract the base file name.
       get_filename_component(FILE_NAME ${FILE_NAME_ABS} NAME_WE)
-      ## Exclude the main.cpp file (it doesn't ned to be 'mocced')
+      ## Exclude the main.cpp file (it doesn't need to be 'mocced')
       if(NOT ${FILE_NAME} STREQUAL "main")
         ## Assign the moc custom filename
         set(MOC_FILE "${FILE_NAME}.moc")
-        if (CTK_QT_VERSION VERSION_GREATER "4")
+        if(CTK_QT_VERSION VERSION_EQUAL "5")
           QT5_GENERATE_MOC(${FILE_NAME_ABS} ${MOC_FILE})
         else()
-          QT4_GENERATE_MOC(${FILE_NAME_ABS} ${MOC_FILE})
+          message(FATAL_ERROR "Support for Qt${CTK_QT_VERSION} is not implemented")
         endif()
         list(APPEND MY_MOC_CXX "${CMAKE_CURRENT_BINARY_DIR}/${MOC_FILE}")
       endif()
     endforeach()
   else()
     ## Moc the library's .h files
-    if (CTK_QT_VERSION VERSION_GREATER "4")
+    if(CTK_QT_VERSION VERSION_EQUAL "5")
       QT5_WRAP_CPP(MY_MOC_CXX ${include_file_list})
       QT5_WRAP_UI(MY_UI_CXX ${ui_file_list})
       #QT5_ADD_RESOURCES(MY_RESOURCE_CXX ${resource_file_list})
     else()
-      QT4_WRAP_CPP(MY_MOC_CXX ${include_file_list})
-      QT4_WRAP_UI(MY_UI_CXX ${ui_file_list})
-      #QT4_ADD_RESOURCES(MY_RESOURCE_CXX ${resource_file_list})
+      message(FATAL_ERROR "Support for Qt${CTK_QT_VERSION} is not implemented")
     endif()
+
   endif()
 
   set(PROJECT_SRCS
@@ -74,7 +73,7 @@ set(test_executable ${PROJECT_NAME}CppTests)
 
 ctkMacroInitproject(1)
 
-add_executable(${test_executable} ${PROJECT_SRCS})
+ctk_add_executable_utf8(${test_executable} ${PROJECT_SRCS})
 target_link_libraries(${test_executable} ${PROJECT_LIBS})
 
 add_test(${PROJECT_NAME}Tests ${CPP_TEST_PATH}/${test_executable})

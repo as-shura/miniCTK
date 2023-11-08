@@ -6,7 +6,7 @@ set(MOC_SRCS )
 
 set(MY_MOC_CXX )
 
-#QT4_WRAP_CPP(MY_MOC_CXX ${MOC_SRCS})
+#QT5_WRAP_CPP(MY_MOC_CXX ${MOC_SRCS})
 
 # Create a test for this EventAdmin implementation
 
@@ -14,11 +14,14 @@ set(test_executable ${PROJECT_NAME}CppTests)
 
 set(${test_executable}_DEPENDENCIES ${fw_lib} ${fwtestutil_lib})
 
+# Ensure "ctkCompatibility_p.h" included from the export header is found
+list(APPEND ${test_executable}_DEPENDENCIES CTKCore)
+
 set(my_includes)
 ctkFunctionGetIncludeDirs(my_includes ${test_executable})
 include_directories(${my_includes})
 
-add_executable(${test_executable} ctkEventAdminImplTestMain.cpp)
+ctk_add_executable_utf8(${test_executable} ctkEventAdminImplTestMain.cpp)
 target_link_libraries(${test_executable}
   ${${test_executable}_DEPENDENCIES}
 )
@@ -38,7 +41,7 @@ set(${test_executable}_DEPENDENCIES ${fw_lib} ${fwtestutil_lib})
 #ctkFunctionGetIncludeDirs(my_includes ${test_executable})
 #include_directories(${my_includes})
 
-add_executable(${test_executable} ctkEventAdminImplPerfTestMain.cpp)
+ctk_add_executable_utf8(${test_executable} ctkEventAdminImplPerfTestMain.cpp)
 target_link_libraries(${test_executable}
   ${${test_executable}_DEPENDENCIES}
 )

@@ -55,7 +55,7 @@ void ctkNetworkConnectorQtSoap::createClient(const QString hostName, const unsig
 
     //registration of the method REMOTE_COMMUNICATION_SOAP at Soap level
     // this method need to reflect the name of the action of the service while QVariant::List are list of
-    // strings, in  which each string represent the correct name of the parameter in the sevice function.
+    // strings, in  which each string represent the correct name of the parameter in the service function.
     registerServerMethod("testArray", parametersForRegisterteredFunction);
 
     //
@@ -86,11 +86,11 @@ void ctkNetworkConnectorQtSoap::createClient(const QString hostName, const unsig
     /*request.setMethod("algorithmSIBA");
     request.addMethodArgument("input", "", "input.aim");
     request.addMethodArgument("output", "", "output.aim");
-    
+
     request.addMethodArgument("gaussian", "", "0.42");
     request.addMethodArgument("load", "", "8");
     request.addMethodArgument("iteration", "", "40");
-    
+
     qDebug() << request.toXmlString();
 
     // Submit the request the the web service.
@@ -109,20 +109,20 @@ void ctkNetworkConnectorQtSoap::createClient(const QString hostName, const unsig
 
 
     qDebug("retrieve value...");
-    
+
 }
 
 void ctkNetworkConnectorQtSoap::createServer(const unsigned int port) {
     Q_UNUSED(port);
-    qDebug() << tr("QtSoap doesn't support server side implementation.").toLatin1();
+    qDebug() << "QtSoap doesn't support server side implementation.";
 }
 
 void ctkNetworkConnectorQtSoap::stopServer() {
-    qDebug() << tr("QtSoap doesn't support server side implementation.").toLatin1();
+    qDebug() << "QtSoap doesn't support server side implementation.";
 }
 
 void ctkNetworkConnectorQtSoap::startListen() {
-    qDebug() << tr("QtSoap doesn't support server side implementation.").toLatin1();
+    qDebug() << "QtSoap doesn't support server side implementation.";
 }
 
 QtSoapType *ctkNetworkConnectorQtSoap::marshall(const QString name, const QVariant &parameter) {
@@ -244,7 +244,7 @@ void ctkNetworkConnectorQtSoap::retrieveRemoteResponse()
     qDebug() << message.toXmlString();
     // Check if the response is a SOAP Fault message
     if (message.isFault()) {
-        qDebug("Error: %s", message.faultString().value().toString().toLatin1().constData());
+        qDebug("Error: %s", message.faultString().value().toString().toUtf8().constData());
         m_Response = NULL;
     }
     else {
@@ -258,13 +258,13 @@ void ctkNetworkConnectorQtSoap::retrieveRemoteResponse()
 void ctkNetworkConnectorQtSoap::processReturnValue( int requestId, QVariant value ) {
     Q_UNUSED( requestId );
     Q_ASSERT( value.canConvert( QVariant::String ) );
-    qDebug("%s", value.toString().toLatin1().data());
+    qDebug("%s", value.toString().toUtf8().data());
     ctkEventBusManager::instance()->notifyEvent("ctk/local/eventBus/remoteCommunicationDone", ctkEventTypeLocal);
 }
 
 void ctkNetworkConnectorQtSoap::processFault( int requestId, int errorCode, QString errorString ) {
     // Log the error.
-    qDebug("%s", tr("Process Fault for requestID %1 with error %2 - %3").arg(QString::number(requestId), QString::number(errorCode), errorString).toLatin1().data());
+    qDebug("%s", QString("Process Fault for requestID %1 with error %2 - %3").arg(QString::number(requestId), QString::number(errorCode), errorString).toUtf8().data());
     ctkEventBusManager::instance()->notifyEvent("ctk/local/eventBus/remoteCommunicationFailed", ctkEventTypeLocal);
 }
 
@@ -315,4 +315,3 @@ void ctkNetworkConnectorQtSoap::processRequest( int requestId, QString methodNam
     }
     mafDEL(argList);
 }*/
-

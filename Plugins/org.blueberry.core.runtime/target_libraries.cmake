@@ -7,5 +7,6 @@
 set(target_libraries
   CTKPluginFramework
   Poco
+  mbilog
   QT_LIBRARIES
 )
