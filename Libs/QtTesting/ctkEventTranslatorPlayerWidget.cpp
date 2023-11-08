@@ -25,6 +25,9 @@
 #include <QTextStream>
 #include <QVBoxLayout>
 
+// CTKCore includes
+#include "ctkUtils.h"
+
 // CTKTesting includes
 #include "ctkCallback.h"
 #include "ctkEventTranslatorPlayerWidget.h"
@@ -53,8 +56,8 @@ ctkEventTranslatorPlayerWidgetPrivate::~ctkEventTranslatorPlayerWidgetPrivate()
 }
 
 //-----------------------------------------------------------------------------
-ctkEventTranslatorPlayerWidget::ctkEventTranslatorPlayerWidget()
-  :  Superclass()
+ctkEventTranslatorPlayerWidget::ctkEventTranslatorPlayerWidget(QWidget* parent, Qt::WindowFlags flags)
+  : Superclass(parent, flags)
   , d_ptr(new ctkEventTranslatorPlayerWidgetPrivate)
 {
   Q_D(ctkEventTranslatorPlayerWidget);
@@ -282,7 +285,7 @@ bool ctkEventTranslatorPlayerWidget::compare(const double &actual,
     QTextStream(stderr, QIODevice::WriteOnly)
         << "Line " << line << " - Problem with function " << function << "\n"
         << "\tActual value : '" << actualName << "' = " << actual << " \n"
-        << "\tExpected value : '" << expectedName << "' = " << expected << endl;
+        << "\tExpected value : '" << expectedName << "' = " << expected << ctk::endl;
     QApplication::exit(EXIT_FAILURE);
     return false;
     }
@@ -301,7 +304,7 @@ bool ctkEventTranslatorPlayerWidget::compare(const int &actual,
     QTextStream(stderr, QIODevice::WriteOnly)
         << "Line " << line << " - Problem with function " << function << "\n"
         << "\tActual value : '" << actualName << "' = " << actual << " \n"
-        << "\tExpected value : '" << expectedName << "' = " << expected << endl;
+        << "\tExpected value : '" << expectedName << "' = " << expected << ctk::endl;
     QApplication::exit(EXIT_FAILURE);
     return false;
     }
@@ -321,7 +324,7 @@ bool ctkEventTranslatorPlayerWidget::compare(const QString& actual,
     QTextStream(stderr, QIODevice::WriteOnly)
         << "Line " << line << " - Problem with function " << function << "\n"
         << "\tActual value : '" << actualName << "' = " << actual << " \n"
-        << "\tExpected value : '" << expectedName << "' = " << expected << endl;
+        << "\tExpected value : '" << expectedName << "' = " << expected << ctk::endl;
     QApplication::exit(EXIT_FAILURE);
     return false;
     }
@@ -341,7 +344,7 @@ bool ctkEventTranslatorPlayerWidget::compare(const QStringList& actual,
     QTextStream(stderr, QIODevice::WriteOnly)
         << "Line " << line << " - Problem with function " << function << "\n"
         << "\tActual value : '" << actualName << "' = " << actual.join(" ") << " \n"
-        << "\tExpected value : '" << expectedName << "' = " << expected.join(" ") << endl;
+        << "\tExpected value : '" << expectedName << "' = " << expected.join(" ") << ctk::endl;
     QApplication::exit(EXIT_FAILURE);
     return false;
     }
@@ -361,7 +364,7 @@ bool ctkEventTranslatorPlayerWidget::compare(const QDateTime& actual,
     QTextStream(stderr, QIODevice::WriteOnly)
         << "Line " << line << " - Problem with function " << function << "\n"
         << "\tActual value : '" << actualName << "' = " << actual.date().toString() << " \n"
-        << "\tExpected value : '" << expectedName << "' = " << expected.date().toString() << endl;
+        << "\tExpected value : '" << expectedName << "' = " << expected.date().toString() << ctk::endl;
     QApplication::exit(EXIT_FAILURE);
     return false;
     }
@@ -381,7 +384,7 @@ bool ctkEventTranslatorPlayerWidget::compare(const QColor& actual,
     QTextStream(stderr, QIODevice::WriteOnly)
         << "Line " << line << " - Problem with function " << function << "\n"
         << "\tActual value : '" << actualName << "' = R:" << actual.red() << " G:"<< actual.green() << " B:" << actual.blue() << "\n"
-        << "\tExpected value : '" << expectedName << "' = R:" << expected.red() << " G:"<< expected.green() << " B:" << expected.blue()<< endl;
+        << "\tExpected value : '" << expectedName << "' = R:" << expected.red() << " G:"<< expected.green() << " B:" << expected.blue()<< ctk::endl;
     QApplication::exit(EXIT_FAILURE);
     return false;
     }
@@ -407,7 +410,7 @@ bool ctkEventTranslatorPlayerWidget::compare(const QImage& actual,
   if (actual.isNull() || expected.isNull())
     {
     QTextStream(stderr, QIODevice::WriteOnly)
-        << "Line " << line << " - 1 image is Null " << function << "\n" << endl;
+        << "Line " << line << " - 1 image is Null " << function << "\n" << ctk::endl;
     QApplication::exit(EXIT_FAILURE);
     return false;
     }
@@ -417,7 +420,7 @@ bool ctkEventTranslatorPlayerWidget::compare(const QImage& actual,
     QTextStream(stderr, QIODevice::WriteOnly)
         << "Line " << line << " - The 2 Images don't have the same size " << function << "\n"
         << "\tActual value : '" << actualName << "' = W:" << actual.width() << " H:"<< actual.height() << "\n"
-        << "\tExpected value : '" << expectedName << "' = W:" << expected.width() << " H:"<< expected.height() << endl;
+        << "\tExpected value : '" << expectedName << "' = W:" << expected.width() << " H:"<< expected.height() << ctk::endl;
     QApplication::exit(EXIT_FAILURE);
     return false;
     }
@@ -446,7 +449,7 @@ bool ctkEventTranslatorPlayerWidget::compare(const QImage& actual,
     {
     QTextStream(stderr, QIODevice::WriteOnly)
         << "Line " << line << " - The 2 Images have "
-        << totaldiff << "% differencies \n" << endl;
+        << totaldiff << "% differences \n" << ctk::endl;
     QApplication::exit(EXIT_FAILURE);
     return false;
     }

@@ -25,11 +25,12 @@
 #include <QFile>
 #include <QMap>
 #include <QMessageBox>
-#include <QXmlSchema>
-#include <QXmlSchemaValidator>
+#include <QtXmlPatterns/QXmlSchema>
+#include <QtXmlPatterns/QXmlSchemaValidator>
 #include <QVariant>
 
 // CTKQtTesting includes
+#include "ctkQtTestingUtility.h"
 #include "ctkXMLEventSource.h"
 
 //-----------------------------------------------------------------------------
@@ -110,7 +111,8 @@ void ctkXMLEventSource::setContent(const QString& xmlfilename)
 }
 
 //-----------------------------------------------------------------------------
-int ctkXMLEventSource::getNextEvent(QString& widget, QString& command, QString&arguments)
+int ctkXMLEventSource::getNextEvent(QString& widget, QString& command,
+  QString& arguments, int& eventType)
 {
   if (!this->XMLStream)
     {
@@ -135,9 +137,13 @@ int ctkXMLEventSource::getNextEvent(QString& widget, QString& command, QString&a
     {
     return DONE;
     }
-  widget = this->XMLStream->attributes().value("widget").toString();
-  command = this->XMLStream->attributes().value("command").toString();
-  arguments = this->XMLStream->attributes().value("arguments").toString();
+  const QXmlStreamAttributes attributes = this->XMLStream->attributes();
+  widget = attributes.value("widget").toString();
+  command = attributes.value("command").toString();
+  arguments = attributes.value("arguments").toString();
+  eventType = attributes.hasAttribute("type") ?
+    ctkQtTestingUtility::eventTypeFromString(this->XMLStream->attributes().value("type").toString()) :
+    pqEventTypes::ACTION_EVENT;
   return SUCCESS;
 }
 
@@ -187,7 +193,7 @@ bool ctkXMLEventSource::restoreApplicationSettings()
   if (!this->Automatic)
     {
     if (QMessageBox::No == QMessageBox::warning(0, tr("Playback ..."),
-                                                tr("The settings are differents from the record Settings.\n"
+                                                tr("The settings are different from the record Settings.\n"
                                                    "Do you want to restore the settings?"),
                                                 QMessageBox::Yes | QMessageBox::No,
                                                 QMessageBox::Yes))

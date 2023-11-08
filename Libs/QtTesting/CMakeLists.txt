@@ -53,7 +53,7 @@ endif()
 
 # Define the C++ code for the file ctkQtTestingUtility
 # Define the headers
-# Define the methode addWidgetEventTranslator/Player()
+# Define the method addWidgetEventTranslator/Player()
 set(CTK_ADD_HEADER_EVENT_PLAYERS "// Event player includes\n")
 #set(CTK_ADD_WIDGET_EVENT_PLAYERS)
 foreach(CTK_HEADER_EVENT_PLAYERS ${CTK_HEADERS_EVENT_PLAYERS})
@@ -150,9 +150,10 @@ set(QtTesting_LIBRARIES QtTesting)
 # The following macro will read the target libraries from the file 'target_libraries.cmake'
 ctkFunctionGetTargetLibraries(KIT_target_libraries)
 
-if(CTK_QT_VERSION VERSION_GREATER "4")
-  list(APPEND KIT_target_libraries Qt5::Xml Qt5::XmlPatterns)
-endif()
+list(APPEND KIT_target_libraries
+  Qt${CTK_QT_VERSION}::Xml
+  Qt${CTK_QT_VERSION}::XmlPatterns
+  )
 
 ctkMacroBuildLib(
   NAME ${PROJECT_NAME}
